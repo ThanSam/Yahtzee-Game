@@ -10,4 +10,8 @@ public class Player {
         this.name = name;
     }
 
+    public void addPoints(int points) {
+        score += points;
+    }
+
 }
