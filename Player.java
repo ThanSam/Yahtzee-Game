@@ -6,8 +6,9 @@ public class Player {
     private List<Combination> availableCombinations;
     private int score = 0;
 
-    public Player(String name) {
+    public Player(String name, List<Combination> availableCombinations) {
         this.name = name;
+        this.availableCombinations = availableCombinations;
     }
 
     public void addPoints(int points) {

@@ -1,4 +1,9 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Combination {
 
@@ -8,28 +13,53 @@ public class Combination {
     private String name;
     private CombinationType combinationType;
     private int pointsGained;
-    private List<Integer> PointsPattern;
 
-    public Combination(String name, CombinationType combinationType, int pointsGained, List<Integer> PointsPattern) {
+    private List<Integer> PointsPatterns;
+
+    public Combination(String name, CombinationType combinationType, int pointsGained, List<Integer> PointsPatterns) {
         this.name = name;
         this.combinationType = combinationType;
         this.pointsGained = pointsGained;
-        this.PointsPattern = PointsPattern;
-    }
-
-    public void setPointsPattern(List<Integer> pointsPattern) {
-        PointsPattern = pointsPattern;
+        this.PointsPatterns = PointsPatterns;
     }
 
     public boolean IsFormed(List<Integer> dice) {
-        if (combinationType == CombinationType.UPPER_SECTION)
-            if(dice.contains(PointsPattern.get(0)))
+
+        if (combinationType == CombinationType.UPPER_SECTION) {
+            if (dice.contains(PointsPatterns.get(0)))
                 return true;
-        else {
-                //Collections.sort(dice);
+        }
+        else {      //for lower section combinations
+
+            switch (name) {
+                case "ThreeOfAKind", "FourOfAKind", "FullHouse", "YAHTZEE":
+                {
+                    Map<Integer, Long> counting = dice.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+                    int conditions[] = new int[PointsPatterns.size()];
+                    Arrays.fill(conditions, 0);
+
+                    for (long v: counting.values())
+                        for(int i=0;i<PointsPatterns.size();i++)
+                            if(v>=PointsPatterns.get(i)) {
+                                conditions[i] = 1;
+                                break;
+                            }
+
+                    boolean conditionsMatched = Arrays.stream(conditions).allMatch(s -> s==1);
+                    return conditionsMatched;
+                }
+                case "SmallStraight":
+                {
+                    if (dice.equals(Arrays.asList(1,2,3,4)) || dice.equals(Arrays.asList(2,3,4,5)) || dice.equals(Arrays.asList(3,4,5,6)))
+                        return true;
+                }
+                case "LargeStraight":
+                    if (dice.equals(Arrays.asList(1,2,3,4,5)) || dice.equals(Arrays.asList(2,3,4,5,6)))
+                        return true;
+
+            }
 
         }
-
         return false;
     }
 
@@ -38,7 +68,7 @@ public class Combination {
         if (combinationType == CombinationType.UPPER_SECTION) {
             int count = 0;
             for (int i = 0; i < dice.size(); i++) {
-                if (dice.get(i).equals(PointsPattern.get(0)))
+                if (dice.get(i).equals(PointsPatterns.get(0)))
                     count++;
             }
             return (count * pointsGained);
@@ -47,5 +77,31 @@ public class Combination {
 
             return 0;
         }
+    }
+
+
+    public static ArrayList<Combination> createCombinations() {
+
+        ArrayList<Combination> combinations = new ArrayList<>();
+
+        //Upper Section Combinations
+        combinations.add(new Combination("Ones", Combination.CombinationType.UPPER_SECTION, 1, Arrays.asList(1)));
+        combinations.add(new Combination("Twos", Combination.CombinationType.UPPER_SECTION, 2, Arrays.asList(2)));
+        combinations.add(new Combination("Threes", Combination.CombinationType.UPPER_SECTION, 3, Arrays.asList(3)));
+        combinations.add(new Combination("Fours", Combination.CombinationType.UPPER_SECTION, 4, Arrays.asList(4)));
+        combinations.add(new Combination("Fives", Combination.CombinationType.UPPER_SECTION, 5, Arrays.asList(5)));
+        combinations.add(new Combination("Sixes", Combination.CombinationType.UPPER_SECTION, 6, Arrays.asList(6)));
+
+        //Lower Section Combinations
+        combinations.add(new Combination("ThreeOfAKind", Combination.CombinationType.LOWER_SECTION, 1, Arrays.asList(3)));
+        combinations.add(new Combination("FourOfAKind", Combination.CombinationType.LOWER_SECTION, 1, Arrays.asList(4)));
+        combinations.add(new Combination("FullHouse", Combination.CombinationType.LOWER_SECTION, 25, Arrays.asList(3,2)));
+        combinations.add(new Combination("SmallStraight", Combination.CombinationType.LOWER_SECTION, 30, Arrays.asList()));
+        combinations.add(new Combination("LargeStraight", Combination.CombinationType.LOWER_SECTION, 40, Arrays.asList()));
+        combinations.add(new Combination("Chance", Combination.CombinationType.LOWER_SECTION, 1, Arrays.asList()));
+
+        combinations.add(new Combination("YAHTZEE", Combination.CombinationType.LOWER_SECTION, 50, Arrays.asList(5)));
+
+        return combinations;
     }
 }
