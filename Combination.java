@@ -23,7 +23,7 @@ public class Combination {
         this.PointsPatterns = PointsPatterns;
     }
 
-    public boolean IsFormed(List<Integer> dice) {
+    public boolean isFormed(List<Integer> dice) {
 
         if (combinationType == CombinationType.UPPER_SECTION) {
             if (dice.contains(PointsPatterns.get(0)))
