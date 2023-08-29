@@ -16,7 +16,6 @@ public class MainGame {
 
         Player user = new Player(name, combinations);
         Player systemPlayer = new Player("system", combinations);
-
     }
 
 }

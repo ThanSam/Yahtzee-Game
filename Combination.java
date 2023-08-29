@@ -23,6 +23,10 @@ public class Combination {
         this.PointsPatterns = PointsPatterns;
     }
 
+    public String getCombinationName() {
+        return name;
+    }
+
     public boolean isFormed(List<Integer> dice) {
 
         if (combinationType == CombinationType.UPPER_SECTION) {
@@ -32,7 +36,7 @@ public class Combination {
         else {      //for lower section combinations
 
             switch (name) {
-                case "ThreeOfAKind", "FourOfAKind", "FullHouse", "YAHTZEE":
+                case "Three of a kind", "Four of a kind", "Full House", "YAHTZEE":
                 {
                     Map<Integer, Long> counting = dice.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
                     int conditions[] = new int[PointsPatterns.size()];
@@ -48,12 +52,12 @@ public class Combination {
                     boolean conditionsMatched = Arrays.stream(conditions).allMatch(s -> s==1);
                     return conditionsMatched;
                 }
-                case "SmallStraight":
+                case "Small straight":
                 {
                     if (dice.equals(Arrays.asList(1,2,3,4)) || dice.equals(Arrays.asList(2,3,4,5)) || dice.equals(Arrays.asList(3,4,5,6)))
                         return true;
                 }
-                case "LargeStraight":
+                case "Large straight":
                     if (dice.equals(Arrays.asList(1,2,3,4,5)) || dice.equals(Arrays.asList(2,3,4,5,6)))
                         return true;
 
@@ -73,12 +77,21 @@ public class Combination {
             }
             return (count * pointsGained);
         }
-        else {
+        else {      //for lower section combinations
 
-            return 0;
+            switch (name) {
+                case "Full House", "Small straight", "Large straight", "YAHTZEE":
+                    return pointsGained;
+
+                case "Three of a kind", "Four of a kind", "Chance":
+                    return dice.stream().mapToInt(Integer::intValue).sum();
+
+                default:
+                    return 0;
+
+            }
         }
     }
-
 
     public static ArrayList<Combination> createCombinations() {
 
@@ -93,11 +106,11 @@ public class Combination {
         combinations.add(new Combination("Sixes", Combination.CombinationType.UPPER_SECTION, 6, Arrays.asList(6)));
 
         //Lower Section Combinations
-        combinations.add(new Combination("ThreeOfAKind", Combination.CombinationType.LOWER_SECTION, 1, Arrays.asList(3)));
-        combinations.add(new Combination("FourOfAKind", Combination.CombinationType.LOWER_SECTION, 1, Arrays.asList(4)));
-        combinations.add(new Combination("FullHouse", Combination.CombinationType.LOWER_SECTION, 25, Arrays.asList(3,2)));
-        combinations.add(new Combination("SmallStraight", Combination.CombinationType.LOWER_SECTION, 30, Arrays.asList()));
-        combinations.add(new Combination("LargeStraight", Combination.CombinationType.LOWER_SECTION, 40, Arrays.asList()));
+        combinations.add(new Combination("Three of a kind", Combination.CombinationType.LOWER_SECTION, 1, Arrays.asList(3)));
+        combinations.add(new Combination("Four of a kind", Combination.CombinationType.LOWER_SECTION, 1, Arrays.asList(4)));
+        combinations.add(new Combination("Full House", Combination.CombinationType.LOWER_SECTION, 25, Arrays.asList(3,2)));
+        combinations.add(new Combination("Small straight", Combination.CombinationType.LOWER_SECTION, 30, Arrays.asList()));
+        combinations.add(new Combination("Large straight", Combination.CombinationType.LOWER_SECTION, 40, Arrays.asList()));
         combinations.add(new Combination("Chance", Combination.CombinationType.LOWER_SECTION, 1, Arrays.asList()));
 
         combinations.add(new Combination("YAHTZEE", Combination.CombinationType.LOWER_SECTION, 50, Arrays.asList(5)));
