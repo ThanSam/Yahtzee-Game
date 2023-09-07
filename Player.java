@@ -14,6 +14,14 @@ public class Player {
         this.availableCombinations = availableCombinations;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getScore() {
+        return totalScore;
+    }
+
     public void addPoints(int points) {
         totalScore += points;
     }

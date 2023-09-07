@@ -27,6 +27,18 @@ public class Combination {
         return name;
     }
 
+    public CombinationType getCombinationType() {
+        return combinationType;
+    }
+
+    public static Combination findCombinationByName(String name) {
+        for (Combination c : createCombinations())
+            if (c.getCombinationName().equals(name))
+                return c;
+
+        return createCombinations().get(0);
+    }
+
     public boolean isFormed(List<Integer> dice) {
 
         if (combinationType == CombinationType.UPPER_SECTION) {
