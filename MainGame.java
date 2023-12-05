@@ -13,7 +13,7 @@ public class MainGame {
         String name = sc.nextLine();
         System.out.println();
 
-        ArrayList<Combination> combinations = new ArrayList<>(Combination.createCombinations());
+        List<Combination> combinations = new ArrayList<>(Combination.createCombinations());
         Player user = new Player(name, combinations);
         Player systemPlayer = new Player("System", combinations);
 
@@ -48,7 +48,7 @@ public class MainGame {
                 Combination combinationFormed = Combination.findCombinationByName(input.get(0));
                 players.get(turn).addPoints(combinationFormed.getPoints(dices));
                 players.get(turn).removeAvailableCombination(combinationFormed);
-                if (combinationFormed.getCombinationType().equals("UPPER_SECTION"))
+                if (combinationFormed instanceof UpperSectionCombination)
                     players.get(turn).checkForBonus(combinationFormed.getPoints(dices));
             }
             else {  //Roll some dice again
